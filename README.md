@@ -18,8 +18,8 @@ Usage
     function getResultForSpecialSituation(id, callback) {
     	var error = null;
     	var constantResult = 'This is always the result';
-			callNextTick(callback, error, constantResult);
-		}
+		callNextTick(callback, error, constantResult);
+    }
 
 So, here's the implementation:
 
