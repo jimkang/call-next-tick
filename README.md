@@ -21,6 +21,18 @@ Usage
 		callNextTick(callback, error, constantResult);
     }
 
+Instead of:
+
+	// callback expects to be called async.
+    function getResultForSpecialSituation(id, callback) {
+    	var error = null;
+    	var constantResult = 'This is always the result';
+    	process.nextTick(function doTheCallWithTheParamsFromTheClosure() {
+    		callback(error, constantResult);
+    	});
+		callNextTick(callback, error, constantResult);
+    }	
+
 So, here's the implementation:
 
 		function makeCallbackCaller(cb, error, result) {
