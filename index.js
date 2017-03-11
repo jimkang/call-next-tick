@@ -20,7 +20,7 @@ function callNextTick() {
 
   if (argsLength > 0) {
     cb = arguments[0];
-    paramsForCallback = new Array(argsLength);
+    paramsForCallback = new Array(argsLength - 1);
     for (var i = 1; i < argsLength; ++i) {
       paramsForCallback[i - 1] = arguments[i];
     }
