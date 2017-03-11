@@ -1,20 +1,36 @@
-var sliceCall = Array.prototype.slice.call;
+/* global process */
 
-// Expecting params cb, error, result1, result2, ...
-function makeCallbackCaller(cb) {
-  var paramsForCallback = Array.prototype.slice.call(arguments, 1);
+function makeCallbackCaller(cb, paramsForCallback) {
+  return callbackCall;
 
-  return function callbackCall() {
+  function callbackCall() {
     cb.apply(cb, paramsForCallback);
-  };
+  }
 }
+
+// This does not use Array.prototype.slice.call on `arguments` because V8 does not
+// know how to optimize one function's `arguments` being used outside that function.
 
 // Expecting params cb, error, result1, result2, ...
 function callNextTick() {
-  var caller = makeCallbackCaller.apply(
-    null, Array.prototype.slice.call(arguments, 0)
-  );
-  process.nextTick(caller);
+  var argsLength = arguments.length;
+  var cb;
+  var paramsForCallback;
+  var caller;
+
+  if (argsLength > 0) {
+    cb = arguments[0];
+    paramsForCallback = new Array(argsLength);
+    for (var i = 1; i < argsLength; ++i) {
+      paramsForCallback[i - 1] = arguments[i];
+    }
+
+    caller = makeCallbackCaller(cb, paramsForCallback);
+    process.nextTick(caller);
+  }
+  else {
+    throw new Error('No callback provided to callNextTick.');
+  }
 }
 
 module.exports = callNextTick;
